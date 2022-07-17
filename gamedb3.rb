@@ -63,7 +63,6 @@ def addGame(gameInfo)
     val3 = gets().chomp()
     print("Who developed the game?\n> ")
     val4 = gets().chomp()
-    gameInfo << @val1 << @val2 << @val3 << @val4
     return [gameInfo]
 end
 
