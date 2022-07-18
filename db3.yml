@@ -1,2 +1,5 @@
---- 
-...
+---
+- !ruby/object:Game
+  title: a
+  platform: c
+  release: d
