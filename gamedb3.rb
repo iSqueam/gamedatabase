@@ -4,88 +4,95 @@ require 'yaml'
 #Global filename for saving
 $fn = 'db3.yml'
 
-#load the database from global file
-def loadDB
-    output = File.new('db3.yml', "r")
-    @gamelist = YAML.load(output.read)
+class GameDB
+    #load the database from global file
+    def initialize
+        begin
+            output = File.new('db3.yml', "r")
+            @gamelist = YAML.load(output.read)
+        rescue => ex
+            puts ex.message
+        ensure
+            @gamelist ||= []
+            puts @gamelist.inspect
+        end
+    end
+    
+    #save item to global file
+    def saveDB
+        output = File.new('db3.yml', "w")
+        output.puts YAML.dump(@gamelist)
+        output.close
+        print("Saved!\n")
+    end
+    
+    #define showdata
+    def showData
+        @gamelist.each do |game|
+            puts game
+        end
+    end
+
+    def addGame(game)
+        @gamelist << game
+    end
 end
-
-#save item to global file
-def saveDB
-    output = File.new('db3.yml', "w")
-    output.puts YAML.dump(@gamelist.to_yaml)
-    output.close
-    print("Saved!\n")
-end
-
-#define showdata
-def showData
-    puts(@gamelist.to_yaml)
-end
-
-#gameinfo hash
-gameInfo = Hash.new
-gameInfo['title']='val1'
-gameInfo['platform']='val2'
-gameInfo['release']='val3'
-gameInfo['developer']='val4'
-
-#append hash to list
-def addGame
-    output = File.open('db3.yml', "w")
-    @gamelist << gameInfo
-    output.close
-end
-
 
 
 #primary class for Game
 class Game
-    def initialize
-        @title = 'val1'
-        @platform = 'val2'
-        @release = 'val3'
-        @developer = 'val4'
-    end
+    attr_accessor :title, :platform, :release, :developer
 
     def getdetails
         return (gameInfo.values)
     end
+    
+    def to_s
+        "#{self.title}: (#{self.platform} - #{self.release} - #{self.developer})"
+    end
 end
 
 #add game user input
-def addGame(gameInfo)
+def inputGame
+    game = Game.new()
     print("Enter Game Title\n> ")
-    val1 = gets().chomp()
+    game.title = gets().chomp()
     print("What platform is the Game on?\n> ")
-    val2 = gets().chomp()
+    game.platform = gets().chomp()
     print("Enter the Year it was released\n> ")
-    val3 = gets().chomp()
+    game.release = gets().chomp()
     print("Who developed the game?\n> ")
-    val4 = gets().chomp()
-    return [gameInfo]
+    game.developer = gets().chomp()
+    return game
 end
 
 #main sequence start
-if File.exists? ($fn) then
-    loadDB
-    showData
-else
-    puts("The file #{fn} cannot be found!")
-end
+# if File.exists? ($fn) then
+#     loadDB
+#     showData
+# else
+#     puts("The file #{fn} cannot be found!")
+# end
 
 #Main Loop
-puts(gameInfo.inspect)
+db = GameDB.new()
+db.showData()
 ans = ''
 until ans == 'q' do
   puts("Add a (N)ew Game (L)oad List (S)ave or (Q)uit?")
   print("> ")
   ans = gets[0].chr().downcase().chomp()
   case ans
-    when 'n' then addGame(Game.new())
-    when 'l' then showData
-    when 's' then saveDB
-    when 'q' then puts("Goodbye!")
-    else puts("Invalid entry!")
+    when 'n' 
+        game = inputGame()
+        db.addGame(game)
+    when 'l' 
+        db.showData
+    when 's' 
+        db.saveDB
+    when 'q' 
+        puts("Goodbye!")
+    else 
+        puts("Invalid entry!")
   end
 end
