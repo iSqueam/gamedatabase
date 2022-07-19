@@ -45,14 +45,15 @@ class GameDB
     end
 
     def deleteGame
+        delSpeech = "Which Game would you like to delete? (Enter number, any other key to cancel)\n> "
         begin
             numList
-            print("Which game would you like to delete? (Enter number, any other key to cancel)\n> ")
+            print(delSpeech)
             input = Integer(gets())    #formerly gets.to_i
             if input > 0 && input > @gamelist.length then
                 puts("Please enter a number from the List")
                 numList
-                print("Which game would you like to delete? (Enter number)\n> ")
+                print(delSpeech)
                 input = Integer(gets())
             end
         rescue => ex
