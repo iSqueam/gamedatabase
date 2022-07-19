@@ -39,8 +39,25 @@ class GameDB
 
     #define numList
     def numList
-        @gamelist.each.with_index(1) do |index, game|
-            puts "#{game} : #{index}"  #why do these display in reverse order?
+        @gamelist.each.with_index(1) do |game, index|
+            puts "#{index} : #{game}"
+        end
+    end
+
+    def deleteGame
+        begin
+            numList
+            print("Which game would you like to delete? (Enter number, any other key to cancel)\n> ")
+            input = Integer(gets())    #formerly gets.to_i
+            if input > 0 && input > @gamelist.length then
+                puts("Please enter a number from the List")
+                numList
+                print("Which game would you like to delete? (Enter number)\n> ")
+                input = Integer(gets())
+            end
+        rescue => ex
+        else
+            @gamelist.delete_at(input - 1)
         end
     end
 end
@@ -78,7 +95,7 @@ db = GameDB.new()
 db.showData()  #formerly db.showData
 ans = ''
 until ans == 'q' do
-  puts("Add a (N)ew Game (L)oad List (S)ave or (Q)uit?")
+  puts("Add a (N)ew Game (L)oad List (D)elete Game (S)ave or (Q)uit?")
   print("> ")
   ans = gets[0].chr().downcase().chomp()
   case ans
@@ -86,7 +103,9 @@ until ans == 'q' do
         game = inputGame()
         db.addGame(game)
     when 'l' 
-        db.numList  #formerly db.showData
+        db.numList
+    when 'd'
+        db.deleteGame
     when 's' 
         db.saveDB
     when 'q' 
