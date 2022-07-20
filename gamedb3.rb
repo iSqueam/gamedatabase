@@ -44,6 +44,7 @@ class GameDB
         end
     end
 
+    #define deleteGame
     def deleteGame
         delSpeech = "Which Game would you like to delete? (Enter number, any other key to cancel)\n> "
         begin
@@ -59,6 +60,29 @@ class GameDB
         rescue => ex
         else
             @gamelist.delete_at(input - 1)
+        end
+    end
+
+    #define editGame
+    def editGame
+        editSpeech = "Which Game would you like to Edit? (Enter number, any other key to cancel)\n> "
+        begin
+        numList
+        print(editSpeech)
+        input = Integer(gets())
+            
+            if input > 0 && input > @gamelist.length then
+            puts("Please enter a number from the List")
+            numList
+            print(editSpeech)
+            input = Integer(gets())
+            end
+
+        rescue => ex
+
+        else
+            puts(@gamelist.values_at(input - 1))
+            @gamelist[input - 1] = (inputGame)
         end
     end
 end
@@ -93,10 +117,10 @@ end
 
 #Main Loop
 db = GameDB.new()
-db.showData()  #formerly db.showData
+db.showData()
 ans = ''
 until ans == 'q' do
-  puts("Add a (N)ew Game (L)oad List (D)elete Game (S)ave or (Q)uit?")
+  puts("Add a (N)ew Game (L)oad List (D)elete Game (E)dit Entry (S)ave or (Q)uit?")
   print("> ")
   ans = gets[0].chr().downcase().chomp()
   case ans
@@ -107,6 +131,8 @@ until ans == 'q' do
         db.numList
     when 'd'
         db.deleteGame
+    when 'e'
+        db.editGame
     when 's' 
         db.saveDB
     when 'q' 
